@@ -115,7 +115,8 @@ cd makara
 ```
 
 ## Possible Errors
-Error 'Hydro Groovy '
+[ERROR] [1721830570.453790]: Mismatched protocol version in packet (b'\xff'): lost sync or rosserial_python is from different ros release than the rosserial client
+
 Solution : Unplug all the usb cables on Pi and plug in arduino and encoder usb first the plug back in other cables. 
 
 
