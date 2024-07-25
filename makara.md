@@ -77,8 +77,11 @@ network:
          # password: "matsya_kcs"
 
 ```
-Sudo netplan generate
-Sudo netplan apply
+
+```
+sudo netplan generate
+sudo netplan apply
+```
 
 For Wifi mode:
 	Comment out mode ap and put the “matsya_kcs” and password:”matsya_kcs” above
@@ -115,22 +118,60 @@ cd makara
 ```
 
 ## Possible Errors
+If you see the following error on the terminal when you run ```./ros1_run_devdocker.sh ./raspi_entry.sh```:
+
+```
 [ERROR] [1721830570.453790]: Mismatched protocol version in packet (b'\xff'): lost sync or rosserial_python is from different ros release than the rosserial client
+```
 
 Solution : Unplug all the usb cables on Pi and plug in arduino and encoder usb first the plug back in other cables. 
 
+## Other Utilities
 
-Run the following command to see odometry data.
+### Odometry visualization
+
+Run the following command on jeston terminal to see odometry data.
 
 ```
 ./ros2_odom.sh
 ```
+The odometry data will be available at ```<jetson-ip-address>:8500/odometry```
 
-If the propeller and rudder need to stopped manually from Pi, run following alias
+### Manual stopping of rudder and propeller
+
+If the propeller and rudder need to stopped manually from Pi, run following alias on raspi terminal
 ```
 stopact
 ```
 
 ### Internet Access to Pi 
 
-For giving  internet access to Pi , unplug ethernet and edit yaml file for internet mode. 
+Getting internet access to raspi has been a persistent problem so far. For giving  internet access to Pi , unplug ethernet and edit yaml file for internet mode. With ethernet connected you will not be able to give internet access to pi.
+
+Another workaround for updating files in jeston and raspi is to connect the ```matsya_kcs``` router to the wall internet port and connect another cable from the router to the network switch on the vehicle. Now you can connect your laptop to the router through WiFi. With netaccess (https://netaccess.iitm.ac.in/account/login) login you can have internet access to your laptop. 
+
+Now you can mount the file system from jetson and raspi onto your laptop using sshfs commands below:
+
+```
+mkdir ~/raspi_mount
+sshfs ubuntu@192.168.0.10:/home/ubuntu ~/raspi_mount
+cd ~/raspi_mount
+```
+
+```
+mkdir ~/jetson_mount
+sshfs jetsonmakara@192.168.0.27:/home/jetsonmakara ~/jetson_mount
+cd ~/jetson_mount
+```
+Once you are inside the folders, you can update the git repositories (https://github.com/MarineAutonomy/makara) as required with ```git pull``` or ```git push``` (after ```git add .``` and ```git commit -m <your-commit-message>```. As your laptop has internet access through the router, the issue of raspi or jetson having or not having access to internet becomes immaterial. 
+
+You can also open the folder in visual code by the command ```code .``` inside these folders.
+
+Once you're finished editing the files, you can unmount the folders with the following commands:
+
+```
+fusermount -u ~/raspi_mount
+```
+```
+fusermount -u ~/jetson_mount
+```
